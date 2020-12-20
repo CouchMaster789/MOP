@@ -8,7 +8,8 @@ app = Flask(__name__)
 app.config.from_object(Config)
 
 if not app.config["MOVIE_DIR"]:
-    print("Please restart app with the MOVIE_DIR set")
+    app.logger.critical("Please restart app with the MOVIE_DIR set")
+    # TODO: add some redirect functionality in this case
 
 
 @app.route('/local_movies')
