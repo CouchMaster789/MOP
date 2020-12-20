@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, render_template
 
 from config import Config
 from tmdb import get_movie_data
@@ -10,6 +10,16 @@ app.config.from_object(Config)
 if not app.config["MOVIE_DIR"]:
     app.logger.critical("Please restart app with the MOVIE_DIR set")
     # TODO: add some redirect functionality in this case
+
+
+@app.route("/movies")
+def movies():
+    files = get_directory_structure(app.config["MOVIE_DIR"])
+    process_files(files)
+
+    movie_list = sorted(get_movie_names(files)[1])
+
+    return render_template("movies.html", movies=movie_list)
 
 
 @app.route('/local_movies')

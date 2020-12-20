@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+
+    <title>MOP Movies</title>
+</head>
+
+<body class="bg-dark">
+
+<div class="container bg-light">
+    <div class="w-100 text-center mb-5 pt-4">
+        <h1>MOP Movie List</h1>
+    </div>
+
+    {% for movie in movies %}
+        {% if loop.index % 6 == 1 %}
+            <div class="row mb-3">
+        {% endif %}
+
+    <div class="col-2">
+        <div class="card bg-dark text-light">
+            <img src="{{ url_for("static", filename="test.jpg") }}" alt="Movie Image">
+            <div class="card-footer p-1">
+                <b>{{ movie }}</b>
+                <hr class="m-0">
+                <small>iMDB <b>7.1</b></small>
+            </div>
+        </div>
+    </div>
+
+    {% if loop.index % 6 == 0 %}
+        </div>
+    {% endif %}
+    {% endfor %}
+
+    {% if movies|length % 6 != 0 %}
+        </div>
+    {% endif %}
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW"
+        crossorigin="anonymous"></script>
+
+</body>
+</html>
