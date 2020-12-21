@@ -146,6 +146,7 @@ def flatten_movie_results(files, movies=None, _first_layer=True, _path=""):
                             "resolution": value["resolution"],
                             "sample": value["sample"],
                             "source": value["source"],
+                            "original_filename": item
                         },
                         "path": _path
                     })
