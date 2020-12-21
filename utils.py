@@ -17,7 +17,8 @@ sources = {"CAM": ["CAMRip", "CAM", "HDCAM"],
            "WEB-DL": ["WEBDL", "WEB-DL", "HDRip", "WEB-DLRip"],
            "WEBCap": ["WEB-Cap", "WEBCAP"],
            "BluRay": ["Blu-Ray", "BluRay", "BDRip", "BD-Rip", "BRRip", "BR-Rip", "BDMV", "BDR", "BD25", "BD50",
-                      "BD5", "BD9"]}
+                      "BD5", "BD9"],
+           "HDRip": ["HDRip", "HD-Rip"]}
 sources = {tag: key for key, tags in sources.items() for tag in tags}
 
 
