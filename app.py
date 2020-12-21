@@ -29,9 +29,7 @@ def movies():
 
     return jsonify({
         "movies": movie_list,
-        "draw": request.form.get("draw"),
         "recordsTotal": len(movie_list),
-        "recordsFiltered": len(movie_list),
     }), 200
 
 

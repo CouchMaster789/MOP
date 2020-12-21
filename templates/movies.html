@@ -43,66 +43,18 @@
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.js"></script>
 
 <script>
-    function search_table(table, val) {
-        table.DataTable().search(val).draw();
-    }
-
-    $(document).ready(function () {
-        let table = $("#movie_list");
-        let search_input = $("#search_input");
-
-        table.DataTable({
-            dom: 'rt<"bottom"pli>',
-            processing: true,
-            serverSide: true,
-            ajax: function (data, callback, settings) {
-                $.post("{{ url_for("movies") }}", {
-                    draw: settings["iDraw"],
-                    per_page: settings["_iDisplayLength"],
-                    offset: settings["_iDisplayStart"],
-                    search: data["search"]["value"]
-                }).done(function (response) {
-                    callback({
-                        "draw": response["draw"],
-                        "recordsTotal": response["recordsTotal"],
-                        "recordsFiltered": response["recordsFiltered"],
-                        "data": response["movies"],
-                    });
-                });
-            },
-            scrollY: '40vh',
-            scrollCollapse: true,
-            columns: [
-                {"data": "name"},
-                {"data": "year"},
-                {"data": "source"},
-            ],
-            columnDefs: [
-                {
-                    targets: 0,
-                }, {
-                    targets: 1,
-                }, {
-                    targets: 2,
-                }
-            ]
-        });
-
-        function delay(fn, ms) {
-            let timer = 0
-            return function (...args) {
-                clearTimeout(timer)
-                timer = setTimeout(fn.bind(this, ...args), ms || 0)
-            }
-        }
-
-        search_input.on('keyup click', delay(function () {
-            {# TODO: only search if query has changed #}
-            search_table(table, $(this).val());
-        }, 200));
-
+    document.addEventListener("DOMContentLoaded", function () {
+        fetch("{{ url_for("movies") }}", {
+            method: "POST"
+        })
+            .then(response => response.json())
+            .then(function(data) {
+                console.log(data);
+                data["movies"].forEach(function(movie) {
+                    console.log(movie);
+                })
+            });
     });
-
 </script>
 
 </body>
