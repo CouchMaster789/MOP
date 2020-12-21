@@ -102,7 +102,7 @@ def process_files(files):
                     except IndexError:  # no resolution (or at least not recorded with traditional 'p' (e.g. 1080p)
                         pass
                     i += 1
-                files[item]["resolution"] = resolution
+                files[item]["resolution"] = resolution if resolution != 0 else ""
 
                 try:
                     name = name[:name.rfind(year)].strip(' ')
