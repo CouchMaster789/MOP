@@ -208,13 +208,3 @@ def take_from_dir(values):
             dir_score += 1
 
     return dir_score > file_score
-
-
-if __name__ == '__main__':
-    addresses = ["D:\\New Movies"]
-    files = {address[:address.rfind("\\")]: get_directory_structure(address) for address in addresses}
-
-    # for file in files:
-    #     print(file, files[file])
-
-    print(flatten_movie_results(files))
