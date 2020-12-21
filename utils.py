@@ -76,22 +76,27 @@ def process_files(files):
                 while i < length + 1:  # finds year of movie (if present)
                     try:
                         int(name[i - 4:i])
-                        if name[i] != 'p' and name[i] != 'P' and name[i - 1] != ' ' and name[i - 4] != ' ' and i != 4:
+                        if name[i+1].lower() != 'p' and name[i - 1] != ' ' and name[i - 4] != ' ' and i != 4:
                             year = name[i - 4:i]
+                            print(name[i]) if year == "-108" else None
+                            break
                     except ValueError:
                         pass  # not integer
                     except IndexError:  # last iteration
-                        year = name[i - 4:i] if len(name) > 4 else 0
+                        try:
+                            year = name[i - 4:i] if len(str(abs(int(name[i - 4:i])))) > 4 else ""
+                        except ValueError:
+                            year = ""
                     i += 1
-                files[item]["year"] = year
+                files[item]["year"] = year if year != 0 else ""
 
                 # parse resolution
                 length, i, resolution = len(name), int(4), int()
                 while i < length + 1:  # finds advertised resolution of movie (if present)
                     try:
                         int(name[i - 4:i])
-                        if name[i] == 'p' or name[i] == "P":
-                            resolution = name[i - 4:i].strip(' ')
+                        if name[i].lower() == 'p':
+                            resolution = name[i - 4:i+1].strip(' ')
                     except ValueError:
                         pass  # not an integer
                     except IndexError:  # no resolution (or at least not recorded with traditional 'p' (e.g. 1080p)
