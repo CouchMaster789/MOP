@@ -30,14 +30,14 @@
         </thead>
         <tbody>
         {% for source in sources %}
-            <tr>
+            <tr id="row{{ loop.index }}">
                 <td>
                     <label>
                         <input class="address" value="{{ source.address }}">
                     </label>
                 </td>
                 <td>
-                    <button class="btn btn-sm btn-danger">Delete</button>
+                    <button class="btn btn-sm btn-danger" onclick="delete_row({{ loop.index }})">Delete</button>
                 </td>
             </tr>
         {% endfor %}
@@ -64,12 +64,23 @@
 
 <script>
     let tbody = document.querySelector("#sources_list").querySelector("tbody");
+    let row_id = "{{ sources|length }}";
 
     function add_row() {
         let row = document.createElement("tr");
-        row.innerHTML = `<tr><td><input class="address"></td><td></td></tr>`
+
+        row_id++;
+        row.id = `row${row_id}`;
+        row.innerHTML = `<tr>
+                            <td><input class="address"></td>
+                            <td><button class="btn btn-sm btn-danger" onclick="delete_row(${row_id})">Delete</button></td>
+                         </tr>`
 
         tbody.insertBefore(row, tbody.children[tbody.children.length - 1])
+    }
+
+    function delete_row(row_id) {
+        tbody.querySelector(`#row${row_id}`).remove();
     }
 
     function save_sources() {

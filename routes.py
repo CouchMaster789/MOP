@@ -44,9 +44,15 @@ def update_sources():
 
     new_address = request.form.getlist("sources[]")
 
+    # add new addresses
     for address in new_address:
         if address and address not in sources:
             db.session.add(Source(address))
+
+    # remove old addresses
+    for source in sources:
+        if source not in new_address:
+            db.session.delete(sources[source])
 
     db.session.commit()
 
