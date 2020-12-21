@@ -2,6 +2,9 @@ import os
 
 
 class Config:
+    SQLALCHEMY_DATABASE_URI = os.environ.get("SQLALCHEMY_DATABASE_URI", "sqlite:///app.db")
+    SQLALCHEMY_TRACK_MODIFICATIONS = True
+
     MOVIE_DIR = os.environ.get("MOVIE_DIR")
 
     TMDB_BASE_URL = "https://api.themoviedb.org/3/"

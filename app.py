@@ -1,4 +1,6 @@
 from flask import Flask, jsonify, render_template, redirect, url_for, request
+from flask_migrate import Migrate
+from flask_sqlalchemy import SQLAlchemy
 
 from config import Config
 from tmdb import get_movie_data
@@ -7,9 +9,14 @@ from utils import get_directory_structure, process_files, get_movie_names
 app = Flask(__name__)
 app.config.from_object(Config)
 
+db = SQLAlchemy(app)
+migrate = Migrate(app, db)
+
 if not app.config["MOVIE_DIR"]:
     app.logger.critical("Please restart app with the MOVIE_DIR set")
     # TODO: add some redirect functionality in this case
+
+from models import Source
 
 
 @app.route("/")
