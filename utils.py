@@ -134,3 +134,11 @@ def get_movie_names(files, movies=None, _first_layer=True):
         return movies
 
     return files, movies
+
+
+if __name__ == '__main__':
+    addresses = ["D:\\New Movies", "J:\\Movies\\New Movies"]
+    files = {address[:address.rfind("\\")]: get_directory_structure(address) for address in addresses}
+
+    for file in files:
+        print(file, files[file])

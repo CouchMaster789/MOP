@@ -15,10 +15,6 @@ def create_app(config_class=Config):
     db.init_app(app)
     migrate.init_app(app, db)
 
-    if not app.config["MOVIE_DIR"]:
-        app.logger.critical("Please restart app with the MOVIE_DIR set")
-        # TODO: add some redirect functionality in this case
-
     from routes import bp
     app.register_blueprint(bp)
 

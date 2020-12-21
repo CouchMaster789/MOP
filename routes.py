@@ -18,7 +18,9 @@ def movies():
     if request.method == "GET":
         return render_template("movies.html")
 
-    files = get_directory_structure(current_app.config["MOVIE_DIR"])
+    files = {source.address[:source.address.rfind("\\")]: get_directory_structure(source.address) for source in
+             Source.query.all()}
+
     process_files(files)
 
     movie_list = sorted(get_movie_names(files))
