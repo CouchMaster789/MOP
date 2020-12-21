@@ -3,7 +3,7 @@ import string
 from functools import reduce
 
 sources = {"CAM": ["CAMRip", "CAM", "HDCAM"],
-           "TeleSync": ["TS", "HDTS", "HD-TS", "TELESYNC", "PDVD", "PreDVDRip", "DTS-HD"],
+           "TeleSync": ["TS", "HDTS", "HD-TS", "TELESYNC", "PDVD", "PreDVDRip"],
            "WorkPrint": ["WP", "WORKPRINT", "WORK-PRINT"],
            "Telecine": ["TC", "HDTC", "HD-TC", "TELECINE"],
            "Screener": ["SCR", "SCREENER", "DVDSCR", "DVD-SCR", "DVDSCREENER", "DVD-SCREENER", "BDSCR"],
@@ -17,7 +17,8 @@ sources = {"CAM": ["CAMRip", "CAM", "HDCAM"],
            "WEB-DL": ["WEBDL", "WEB-DL", "HDRip", "WEB-DLRip"],
            "WEBCap": ["WEB-Cap", "WEBCAP"],
            "BluRay": ["Blu-Ray", "BluRay", "BDRip", "BD-Rip", "BRRip", "BR-Rip", "BDMV", "BDR", "BD25", "BD50",
-                      "BD5", "BD9"]}  # TODO: reverse the structure of this dictionary for a speed improvement
+                      "BD5", "BD9"]}
+sources = {tag: key for key, tags in sources.items() for tag in tags}
 
 
 def get_directory_structure(root_directory):
@@ -40,12 +41,13 @@ def get_directory_structure(root_directory):
 
 def parse_source(name):
     letters = list(string.ascii_lowercase)
-    for source in sources.values():  # iterates through all of the sources looking for a match
-        for tag in source:
-            if tag.lower() in name.lower() or tag.lower().replace("-", " ") in name.lower():
-                if name[name.lower().index(tag.lower()) + 1].lower() not in letters \
-                        or name[name.lower().index(tag.lower()) - 1].lower() not in letters:
-                    return list(sources.keys())[list(sources.values()).index(source)]
+
+    name = name.lower()
+    for tag in sources:
+        tag_ = tag.lower()
+        if tag_ in name or tag_.replace("-", " ") in name:
+            if name[name.index(tag_) - 1] not in letters:
+                return sources[tag]
 
     return ""
 
