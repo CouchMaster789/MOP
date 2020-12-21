@@ -3,7 +3,7 @@ from flask import jsonify, render_template, redirect, url_for, request, Blueprin
 from app import db
 from models import Source
 from tmdb import get_movie_data
-from utils import get_directory_structure, process_files, get_movie_names
+from utils import get_directory_structure, process_files, flatten_movie_results
 
 bp = Blueprint('movies', __name__, url_prefix="/")
 
@@ -23,7 +23,7 @@ def movies():
 
     process_files(files)
 
-    movie_list = sorted(get_movie_names(files))
+    movie_list = sorted(flatten_movie_results(files), key=lambda key: key["marked"]["title"])
 
     return jsonify({
         "movies": movie_list,
@@ -63,10 +63,12 @@ def update_sources():
 
 @bp.route('/local_movies')
 def local_movies():
-    files = get_directory_structure(current_app.config["MOVIE_DIR"])
+    files = {source.address[:source.address.rfind("\\")]: get_directory_structure(source.address)
+             for source in Source.query.all()}
+
     process_files(files)
 
-    movie_list = sorted(get_movie_names(files))
+    movie_list = sorted(flatten_movie_results(files), key=lambda key: key["marked"]["title"])
 
     return jsonify({"movies": movie_list, "raw_data": files}), 200
 
@@ -78,7 +80,7 @@ def remote_data():
 
     movies = []
 
-    for movie in sorted(get_movie_names(files)):
+    for movie in sorted(flatten_movie_results(files), key=lambda key: key["marked"]["title"]):
         movies.append(get_movie_data(movie))
 
     return jsonify({"movies": movies}), 200

@@ -57,9 +57,9 @@
                     console.log(movie);
                     table.querySelector("#body").insertAdjacentHTML("beforeend", `
                     <tr>
-                        <td>${movie}</td>
-                        <td></td>
-                        <td></td>
+                        <td>${movie["marked"]["title"]}</td>
+                        <td>${movie["marked"]["year"]}</td>
+                        <td>${movie["marked"]["source"]}</td>
                     </tr>
                     `)
                 })

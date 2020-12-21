@@ -115,20 +115,40 @@ def process_files(files):
     return files
 
 
-def get_movie_names(files, movies=None, _first_layer=True):
+def flatten_movie_results(files, movies=None, _first_layer=True, _path=""):
     """
-    filters out all movie names from full list of extracted data
+    filters out all movies from full list of extracted data and flattens the results
+
+    _first_layer - tracks whether it is in the outer layer or not, used to determine what to return
+    _path - tracks the file path
     """
 
     for item, value in files.items():
+        if isinstance(value, dict):
+            path = os.path.join(_path, item)
+            if path[-1] == ":":  # for some reason join doesn't recognise windows drives :\
+                path += "\\"
+        else:
+            path = _path
+
         if value and "name" not in value:
-            files[item], movies = get_movie_names(value, movies, _first_layer=False)
+            files[item], movies = flatten_movie_results(value, movies, _first_layer=False, _path=path)
         else:
             if not movies:
                 movies = []
             if value:
                 if not value["sample"]:
-                    movies.append(value["name"])
+                    movies.append({
+                        "marked": {
+                            "title": value["name"],
+                            "year": value["year"],
+                            "file_type": value["file_type"],
+                            "resolution": value["resolution"],
+                            "sample": value["sample"],
+                            "source": value["source"],
+                        },
+                        "path": _path
+                    })
 
     if _first_layer:
         return movies
@@ -137,8 +157,10 @@ def get_movie_names(files, movies=None, _first_layer=True):
 
 
 if __name__ == '__main__':
-    addresses = ["D:\\New Movies", "J:\\Movies\\New Movies"]
+    addresses = ["D:\\New Movies"]
     files = {address[:address.rfind("\\")]: get_directory_structure(address) for address in addresses}
 
-    for file in files:
-        print(file, files[file])
+    # for file in files:
+    #     print(file, files[file])
+
+    print(flatten_movie_results(files))
