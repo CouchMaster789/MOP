@@ -38,14 +38,83 @@ def get_directory_structure(root_directory):
     return directory
 
 
-def process_files(files):
+def parse_source(name):
+    letters = list(string.ascii_lowercase)
+    for source in sources.values():  # iterates through all of the sources looking for a match
+        for tag in source:
+            if tag.lower() in name.lower() or tag.lower().replace("-", " ") in name.lower():
+                if name[name.lower().index(tag.lower()) + 1].lower() not in letters \
+                        or name[name.lower().index(tag.lower()) - 1].lower() not in letters:
+                    return list(sources.keys())[list(sources.values()).index(source)]
+
+    return ""
+
+
+def parse_name(name):
+    name = name[:name.rfind('.')] if "." in name else name
+
+    for replacer in ['(', ')', '.', '[', ']', '_']:
+        name = name.replace(replacer, ' ')
+        name = name.replace('  ', ' ')
+
+    return name.strip(' ')
+
+
+def parse_year(name):
+    length, i, year = len(name), int(4), int()
+    while i < length + 1:  # finds year of movie (if present)
+        try:
+            int(name[i - 4:i])
+            if name[i].lower() != 'p' and name[i - 1] != ' ' and name[i - 4] != ' ' and i != 4:
+                year = name[i - 4:i]
+                break
+        except ValueError:
+            pass  # not integer
+        except IndexError:  # last iteration
+            try:
+                year = name[i - 4:i] if len(str(abs(int(name[i - 4:i])))) > 4 else ""
+            except ValueError:
+                year = ""
+        i += 1
+
+    return year if year != 0 else ""
+
+
+def parse_resolution(name):
+    length, i, resolution = len(name), int(4), int()
+    while i < length + 1:  # finds advertised resolution of movie (if present)
+        try:
+            int(name[i - 4:i])
+            if name[i].lower() == 'p':
+                resolution = name[i - 4:i + 1].strip(' ')
+                return resolution if resolution != 0 else ""
+        except ValueError:
+            pass  # not an integer
+        except IndexError:  # no resolution (or at least not recorded with traditional 'p' (e.g. 1080p)
+            pass
+        i += 1
+
+    return ""
+
+
+def parse_name_pt2(name, year=None, resolution=None):
+    """reduces movie name up to year or resolution depending on which, if any, are present"""
+
+    if year:
+        return name[:name.rfind(year)].strip(' ')
+    if resolution:
+        return name[:name.rfind(resolution)].strip(' ')
+    return resolution
+
+
+def process_files(files, folder_name=None):
     """
     parses files and extracts as much information as possible
     """
 
     for item, value in files.items():
         if value:  # if directory
-            files[item] = process_files(value)
+            files[item] = process_files(value, folder_name=item)
         else:
             if item[-3:] in ['avi', 'mp4', 'mkv']:
                 files[item] = {
@@ -54,68 +123,25 @@ def process_files(files):
                     "sample": False
                 }
 
-                # parse source
-                letters = list(string.ascii_lowercase)
-                for source in sources.values():  # iterates through all of the sources looking for a match
-                    for tag in source:
-                        if tag.lower() in item.lower() or tag.lower().replace("-", " ") in item.lower():
-                            if item[item.lower().index(tag.lower()) + 1].lower() not in letters \
-                                    or item[item.lower().index(tag.lower()) - 1].lower() not in letters:
-                                files[item]["source"] = list(sources.keys())[list(sources.values()).index(source)]
+                files[item]["source"] = parse_source(item)
+                files[item]["dir_source"] = parse_source(folder_name)
 
-                # parse name
-                name = item[:item.rfind('.')] if "." in item else item
+                name = parse_name(item)
+                folder_name = parse_name(folder_name)
 
-                for replacer in ['(', ')', '.', '[', ']', '_']:
-                    name = name.replace(replacer, ' ')
-                    name = name.replace('  ', ' ')
-                name = name.strip(' ')
+                files[item]["year"] = parse_year(name)
+                files[item]["dir_year"] = parse_year(folder_name)
 
-                # parse year
-                length, i, year = len(name), int(4), int()
-                while i < length + 1:  # finds year of movie (if present)
-                    try:
-                        int(name[i - 4:i])
-                        if name[i+1].lower() != 'p' and name[i - 1] != ' ' and name[i - 4] != ' ' and i != 4:
-                            year = name[i - 4:i]
-                            print(name[i]) if year == "-108" else None
-                            break
-                    except ValueError:
-                        pass  # not integer
-                    except IndexError:  # last iteration
-                        try:
-                            year = name[i - 4:i] if len(str(abs(int(name[i - 4:i])))) > 4 else ""
-                        except ValueError:
-                            year = ""
-                    i += 1
-                files[item]["year"] = year if year != 0 else ""
-
-                # parse resolution
-                length, i, resolution = len(name), int(4), int()
-                while i < length + 1:  # finds advertised resolution of movie (if present)
-                    try:
-                        int(name[i - 4:i])
-                        if name[i].lower() == 'p':
-                            resolution = name[i - 4:i+1].strip(' ')
-                    except ValueError:
-                        pass  # not an integer
-                    except IndexError:  # no resolution (or at least not recorded with traditional 'p' (e.g. 1080p)
-                        pass
-                    i += 1
-                files[item]["resolution"] = resolution if resolution != 0 else ""
-
-                try:
-                    name = name[:name.rfind(year)].strip(' ')
-                except TypeError:  # no year present
-                    try:
-                        name = name[:name.rfind(resolution)].strip(' ')
-                    except TypeError:  # no resolution present
-                        pass
+                files[item]["resolution"] = parse_resolution(name)
+                files[item]["dir_resolution"] = parse_resolution(folder_name)
 
                 if "sample" in item.lower():
                     files[item]["sample"] = True
 
-                files[item]["name"] = name
+                files[item]["name"] = parse_name_pt2(name, year=files[item]["year"],
+                                                     resolution=files[item]["resolution"])
+                files[item]["dir_name"] = parse_name_pt2(folder_name, year=files[item]["dir_year"],
+                                                         resolution=files[item]["dir_resolution"])
 
     return files
 
@@ -143,14 +169,15 @@ def flatten_movie_results(files, movies=None, _first_layer=True, _path=""):
                 movies = []
             if value:
                 if not value["sample"]:
+                    dir_values = take_from_dir(value)
                     movies.append({
                         "marked": {
-                            "title": value["name"],
-                            "year": value["year"],
+                            "title": value["dir_name"] if dir_values else value["name"],
+                            "year": value["dir_year"] if dir_values else value["year"],
                             "file_type": value["file_type"],
-                            "resolution": value["resolution"],
+                            "resolution": value["dir_resolution"] if dir_values else value["resolution"],
                             "sample": value["sample"],
-                            "source": value["source"],
+                            "source": value["dir_source"] if dir_values else value["source"],
                             "original_filename": item
                         },
                         "path": _path
@@ -160,6 +187,24 @@ def flatten_movie_results(files, movies=None, _first_layer=True, _path=""):
         return movies
 
     return files, movies
+
+
+def take_from_dir(values):
+    """checks whether the movie details should be extracted from the filename or folder name"""
+
+    file_score, dir_score = 0, 0
+
+    attributes = ["year", "resolution", "source"]
+
+    for attribute in attributes:
+        if values[attribute]:
+            file_score += 1
+
+    for attribute in attributes:
+        if values["dir_" + attribute]:
+            dir_score += 1
+
+    return dir_score > file_score
 
 
 if __name__ == '__main__':
