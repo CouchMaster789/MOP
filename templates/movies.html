@@ -21,12 +21,17 @@
         <h1>MOP Movie List</h1>
     </div>
 
-    <table class="table" id="movie_list">
+    <div class="card bg-warning text-center float-end mb-1 p-1" style="width: 7em;">
+        <b id="movie_count">Loading Movie Count</b>
+    </div>
+
+    <table class="table table-sm table-bordered border-primary" id="movie_list">
         <thead>
         <tr>
             <th>Name</th>
             <th>Year</th>
             <th>Source</th>
+            <th>Resolution</th>
         </tr>
         </thead>
         <tbody id="body"></tbody>
@@ -51,15 +56,22 @@
             method: "POST"
         })
             .then(response => response.json())
-            .then(function(data) {
+            .then(function (data) {
                 console.log(data);
-                data["movies"].forEach(function(movie) {
+
+                document.querySelector("#movie_count").innerText = data["recordsTotal"] + " Movies"
+
+                data["movies"].forEach(function (movie) {
                     console.log(movie);
                     table.querySelector("#body").insertAdjacentHTML("beforeend", `
                     <tr>
-                        <td>${movie["marked"]["title"]}</td>
+                        <td>
+                            ${movie["marked"]["title"]}
+                            <small class="text-muted">${movie["path"]}</small>
+                        </td>
                         <td>${movie["marked"]["year"]}</td>
                         <td>${movie["marked"]["source"]}</td>
+                        <td>${movie["marked"]["resolution"]}</td>
                     </tr>
                     `)
                 })
