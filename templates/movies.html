@@ -29,6 +29,7 @@
             <th>Source</th>
         </tr>
         </thead>
+        <tbody id="body"></tbody>
     </table>
 </div>
 
@@ -44,6 +45,8 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
+        let table = document.querySelector("#movie_list");
+
         fetch("{{ url_for("movies") }}", {
             method: "POST"
         })
@@ -52,6 +55,13 @@
                 console.log(data);
                 data["movies"].forEach(function(movie) {
                     console.log(movie);
+                    table.querySelector("#body").insertAdjacentHTML("beforeend", `
+                    <tr>
+                        <td>${movie}</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    `)
                 })
             });
     });
