@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, render_template
+from flask import Flask, jsonify, render_template, redirect, url_for, request
 
 from config import Config
 from tmdb import get_movie_data
@@ -12,14 +12,27 @@ if not app.config["MOVIE_DIR"]:
     # TODO: add some redirect functionality in this case
 
 
-@app.route("/movies")
+@app.route("/")
+def index():
+    return redirect(url_for("movies"))
+
+
+@app.route("/movies", methods=["GET", "POST"])
 def movies():
+    if request.method == "GET":
+        return render_template("movies.html")
+
     files = get_directory_structure(app.config["MOVIE_DIR"])
     process_files(files)
 
-    movie_list = sorted(get_movie_names(files)[1])
+    movie_list = sorted(get_movie_names(files))
 
-    return render_template("movies.html", movies=movie_list)
+    return jsonify({
+        "movies": movie_list,
+        "draw": request.form.get("draw"),
+        "recordsTotal": len(movie_list),
+        "recordsFiltered": len(movie_list),
+    }), 200
 
 
 @app.route('/local_movies')
@@ -27,7 +40,7 @@ def local_movies():
     files = get_directory_structure(app.config["MOVIE_DIR"])
     process_files(files)
 
-    movie_list = sorted(get_movie_names(files)[1])
+    movie_list = sorted(get_movie_names(files))
 
     return jsonify({"movies": movie_list, "raw_data": files}), 200
 
@@ -39,7 +52,7 @@ def remote_data():
 
     movies = []
 
-    for movie in sorted(get_movie_names(files)[1]):
+    for movie in sorted(get_movie_names(files)):
         movies.append(get_movie_data(movie))
 
     return jsonify({"movies": movies}), 200

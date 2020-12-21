@@ -115,19 +115,22 @@ def process_files(files):
     return files
 
 
-def get_movie_names(files, movies=None):
+def get_movie_names(files, movies=None, _first_layer=True):
     """
-    finds all movie names
+    filters out all movie names from full list of extracted data
     """
 
     for item, value in files.items():
         if value and "name" not in value:
-            files[item], movies = get_movie_names(value, movies)
+            files[item], movies = get_movie_names(value, movies, _first_layer=False)
         else:
             if not movies:
                 movies = []
             if value:
                 if not value["sample"]:
                     movies.append(value["name"])
+
+    if _first_layer:
+        return movies
 
     return files, movies
