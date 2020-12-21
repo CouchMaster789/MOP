@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.css">
+
+    <title>MOP Movies</title>
+</head>
+
+<body class="bg-dark">
+
+<div class="container bg-light">
+    <div class="w-100 text-center mb-5 pt-4">
+        <h1>MOP Sources</h1>
+    </div>
+
+    <table class="table" id="sources_list">
+        <thead>
+        <tr>
+            <th>Address</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for source in sources %}
+            <tr>
+                <td>
+                    <label>
+                        <input class="address" value="{{ source.address }}">
+                    </label>
+                </td>
+                <td>
+                    <button class="btn btn-sm btn-danger">Delete</button>
+                </td>
+            </tr>
+        {% endfor %}
+        <tr>
+            <td></td>
+            <td class="text-end">
+                <button class="btn btn-primary" id="add_source" onclick="add_row()">Add</button>
+                <button class="btn btn-success" id="save" onclick="save_sources()">Save</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"
+        integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg=="
+        crossorigin="anonymous"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW"
+        crossorigin="anonymous"></script>
+
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.js"></script>
+
+<script>
+    let tbody = document.querySelector("#sources_list").querySelector("tbody");
+
+    function add_row() {
+        let row = document.createElement("tr");
+        row.innerHTML = `<tr><td><input class="address"></td><td></td></tr>`
+
+        tbody.insertBefore(row, tbody.children[tbody.children.length - 1])
+    }
+
+    function save_sources() {
+        let formData = new FormData();
+
+        Array.from(tbody.children).slice(0, -1).forEach(function (row) {
+            formData.append('sources[]', row.querySelector(".address").value);
+        })
+
+        fetch("{{ url_for("movies.update_sources") }}",
+            {
+                method: "POST",
+                body: formData
+            })
+            .then(function (response) {
+                if (response.ok)
+                    window.location.href = "{{ url_for("movies.sources_page") }}";
+            })
+    }
+</script>
+
+</body>
+</html>

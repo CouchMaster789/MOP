@@ -1,5 +1,7 @@
 from flask import jsonify, render_template, redirect, url_for, request, Blueprint, current_app
 
+from app import db
+from models import Source
 from tmdb import get_movie_data
 from utils import get_directory_structure, process_files, get_movie_names
 
@@ -25,6 +27,30 @@ def movies():
         "movies": movie_list,
         "recordsTotal": len(movie_list),
     }), 200
+
+
+@bp.route("sources")
+def sources_page():
+    return render_template("sources.html", sources=Source.query.all())
+
+
+@bp.route("update_sources", methods=["POST"])
+def update_sources():
+    # deliberately taken a quicker approach in terms of front end to just submit all sources and reconcile changes on
+    # server
+
+    sources = Source.query.all()
+    sources = {source.address: source for source in sources}
+
+    new_address = request.form.getlist("sources[]")
+
+    for address in new_address:
+        if address and address not in sources:
+            db.session.add(Source(address))
+
+    db.session.commit()
+
+    return jsonify(), 200
 
 
 @bp.route('/local_movies')
