@@ -31,7 +31,7 @@ def movies():
     process_files(files)
 
     movie_list = flatten_movie_results(files)
-    movie_list = sorted(movie_list, key=lambda key: key["marked"]["title"].lower())
+    movie_list = sorted(movie_list, key=lambda key: key["marked"]["year"].lower())
 
     return jsonify({
         "movies": movie_list,

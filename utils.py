@@ -41,6 +41,11 @@ def get_directory_structure(root_directory):
 
 
 def parse_source(name):
+    """
+    identifies source used in name
+    returns the source and the tag used
+    """
+
     letters = list(string.ascii_lowercase)
 
     name = name.lower()
@@ -48,12 +53,16 @@ def parse_source(name):
         tag_ = tag.lower()
         if tag_ in name or tag_.replace("-", " ") in name:
             if name[name.find(tag_) - 1] not in letters:
-                return sources[tag]
+                return sources[tag], tag
 
-    return ""
+    return "", ""
 
 
 def parse_name(name):
+    """
+    simple name parsing to remove brackets, dots and spaces
+    """
+
     name = name[:name.rfind('.')] if "." in name else name
 
     for replacer in ['(', ')', '.', '[', ']', '_']:
@@ -64,6 +73,10 @@ def parse_name(name):
 
 
 def parse_year(name):
+    """
+    iterates through the name with a 4-length window looking for appropriate years
+    """
+
     length, i, year = len(name), int(4), int()
     while i < length + 1:  # finds year of movie (if present)
         try:
@@ -84,6 +97,10 @@ def parse_year(name):
 
 
 def parse_resolution(name):
+    """
+    iterates through the name with a 4-length window looking for a resolution
+    """
+
     length, i, resolution = len(name), int(4), int()
     while i < length + 1:  # finds advertised resolution of movie (if present)
         try:
@@ -100,14 +117,19 @@ def parse_resolution(name):
     return ""
 
 
-def parse_name_pt2(name, year=None, resolution=None):
+def parse_name_pt2(name, year=None, resolution=None, source=None):
     """reduces movie name up to year or resolution depending on which, if any, are present"""
 
     if year:
-        return name[:name.rfind(year)].strip(' ')
-    if resolution:
-        return name[:name.rfind(resolution)].strip(' ')
-    return name
+        name = name[:name.rfind(year)]
+
+    elif resolution:
+        name = name[:name.rfind(resolution)]
+
+    elif source:
+        name = name[:name.rfind(source)]
+
+    return name.strip(' ')
 
 
 def process_files(files, folder_name=None):
@@ -119,15 +141,15 @@ def process_files(files, folder_name=None):
         if value:  # if directory
             files[item] = process_files(value, folder_name=item)
         else:
-            if item[-3:] in ['avi', 'mp4', 'mkv']:
+            if item[-3:] in ['avi', 'mp4', 'mkv'] and "extra" not in folder_name.lower():
                 files[item] = {
                     "file_type": item[-3:],
                     "source": "",
                     "sample": False
                 }
 
-                files[item]["source"] = parse_source(item)
-                files[item]["dir_source"] = parse_source(folder_name)
+                files[item]["source"], files[item]["source_tag"] = parse_source(item)
+                files[item]["dir_source"], files[item]["dir_source_tag"] = parse_source(folder_name)
 
                 name = parse_name(item)
                 folder_name = parse_name(folder_name)
@@ -141,10 +163,14 @@ def process_files(files, folder_name=None):
                 if "sample" in item.lower():
                     files[item]["sample"] = True
 
-                files[item]["name"] = parse_name_pt2(name, year=files[item]["year"],
-                                                     resolution=files[item]["resolution"])
-                files[item]["dir_name"] = parse_name_pt2(folder_name, year=files[item]["dir_year"],
-                                                         resolution=files[item]["dir_resolution"])
+                files[item]["name"] = parse_name_pt2(name,
+                                                     year=files[item]["year"],
+                                                     resolution=files[item]["resolution"],
+                                                     source=files[item]["source_tag"])
+                files[item]["dir_name"] = parse_name_pt2(folder_name,
+                                                         year=files[item]["dir_year"],
+                                                         resolution=files[item]["dir_resolution"],
+                                                         source=files[item]["dir_source_tag"])
 
     return files
 
