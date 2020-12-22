@@ -1,3 +1,4 @@
+import datetime
 import os
 import string
 from functools import reduce
@@ -20,6 +21,7 @@ sources = {"CAM": ["CAMRip", "CAM", "HDCAM"],
                       "BD5", "BD9"],
            "HDRip": ["HDRip", "HD-Rip"]}
 sources = {tag: key for key, tags in sources.items() for tag in tags}
+current_year = datetime.datetime.now().year
 
 
 def get_directory_structure(root_directory):
@@ -78,17 +80,24 @@ def parse_year(name):
     """
 
     length, i, year = len(name), int(4), int()
-    while i < length + 1:  # finds year of movie (if present)
+    while i < length + 1:
         try:
             int(name[i - 4:i])
             if name[i].lower() != 'p' and name[i - 1] != ' ' and name[i - 4] != ' ' and i != 4:
                 year = name[i - 4:i]
-                break
+                if 1900 <= int(year) <= current_year:
+                    break
+                else:
+                    year = ""
         except ValueError:
             pass  # not integer
         except IndexError:  # last iteration
             try:
-                year = name[i - 4:i] if len(str(abs(int(name[i - 4:i])))) > 4 else ""
+                year = name[i - 4:i] if len(str(abs(int(name[i - 4:i])))) == 4 else ""
+                if 1900 <= int(year) <= current_year:
+                    break
+                else:
+                    year = ""
             except ValueError:
                 year = ""
         i += 1
@@ -129,7 +138,7 @@ def parse_name_pt2(name, year=None, resolution=None, source=None):
     elif source:
         name = name[:name.rfind(source)]
 
-    return name.strip(' ')
+    return name.strip(' ').lower().title()
 
 
 def process_files(files, folder_name=None):
