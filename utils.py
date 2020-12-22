@@ -47,7 +47,7 @@ def parse_source(name):
     for tag in sources:
         tag_ = tag.lower()
         if tag_ in name or tag_.replace("-", " ") in name:
-            if name[name.index(tag_) - 1] not in letters:
+            if name[name.find(tag_) - 1] not in letters:
                 return sources[tag]
 
     return ""
