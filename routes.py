@@ -18,8 +18,9 @@ def movies():
     if request.method == "GET":
         return render_template("movies.html")
 
-    files = {source.address[:source.address.rfind("\\")]: get_directory_structure(source.address) for source in
-             Source.query.all()}
+    sources = Source.query.all()
+
+    files = {source.address[:source.address.rfind("\\")]: get_directory_structure(source.address) for source in sources}
 
     process_files(files)
 
@@ -27,7 +28,8 @@ def movies():
 
     return jsonify({
         "movies": movie_list,
-        "recordsTotal": len(movie_list),
+        "movie_count": len(movie_list),
+        "source_count": len(sources),
     }), 200
 
 
