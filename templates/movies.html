@@ -39,6 +39,9 @@
                     document.querySelector("#sources_count").innerText = data["source_count"] + " Sources"
                     document.querySelector("#movie_count").innerText = data["movie_count"] + " Movies"
 
+                    if (data["movie_count"] === 0)
+                        table.querySelector("#body").insertAdjacentHTML("beforeend", `<tr><td colspan=4 class="text-center fst-italic">No results available</td></tr>`);
+
                     data["movies"].forEach(function (movie) {
                         table.querySelector("#body").insertAdjacentHTML("beforeend", `
                         <tr>
