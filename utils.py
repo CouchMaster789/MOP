@@ -107,7 +107,7 @@ def parse_name_pt2(name, year=None, resolution=None):
         return name[:name.rfind(year)].strip(' ')
     if resolution:
         return name[:name.rfind(resolution)].strip(' ')
-    return resolution
+    return name
 
 
 def process_files(files, folder_name=None):
