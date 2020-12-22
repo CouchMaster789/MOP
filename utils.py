@@ -130,7 +130,7 @@ def parse_resolution(name):
             int(name[i - 4:i])
             if name[i].lower() == 'p':
                 resolution = name[i - 4:i + 1].strip(' ')
-                return resolution if resolution != 0 else ""
+                return resolution.lower() if resolution != 0 else ""
         except ValueError:
             pass  # not an integer
         except IndexError:  # no resolution (or at least not recorded with traditional 'p' (e.g. 1080p)
