@@ -34,6 +34,12 @@ editions = {
 }
 editions = {tag: edition for edition, tags in editions.items() for tag in tags}  # reverses the above dictionary
 
+codecs = {
+    "H.264": ["h.264", "h264", "x.264", "x264"],
+    "H.265": ["h.265", "h265", "x.265", "x265", "hevc"]
+}
+codecs = {tag: codec for codec, tags in codecs.items() for tag in tags}  # reverses the above dictionary
+
 current_year = datetime.datetime.now().year
 letters = list(string.ascii_lowercase)
 
@@ -68,6 +74,41 @@ def parse_source(name):
             tag_index = name_lower.index(tag.lower())
             if name_lower[tag_index - 1] not in letters:
                 return sources[tag], name[tag_index:tag_index + len(tag)]
+        except ValueError:
+            pass
+
+    return "", ""
+
+
+def parse_edition(name):
+    """
+    identifies edition used in name
+    returns the edition and the tag used
+    """
+
+    for edition_tag in editions:
+        try:
+            tag_index = name.lower().index(edition_tag)
+            if name[tag_index - 1] not in letters:
+                return editions[edition_tag], name[tag_index:tag_index + len(edition_tag)]
+        except ValueError:
+            pass
+
+    return "", ""
+
+
+def parse_codec(name):
+    """
+    identifies codec used in name
+    returns the codec and the tag used
+    """
+
+    for codec_tag in codecs:
+        name_lower = name.lower()
+        try:
+            tag_index = name_lower.index(codec_tag.lower())
+            if name_lower[tag_index - 1] not in letters:
+                return codecs[codec_tag], name[tag_index:tag_index + len(codec_tag)]
         except ValueError:
             pass
 
@@ -170,23 +211,6 @@ def parse_roman_numerals(name):
     return parsed_name
 
 
-def parse_edition(name):
-    """
-    identifies edition used in name
-    returns the edition and the tag used
-    """
-
-    for edition_tag in editions:
-        try:
-            tag_index = name.lower().index(edition_tag)
-            if name[tag_index - 1] not in letters:
-                return editions[edition_tag], name[tag_index:tag_index + len(edition_tag)]
-        except ValueError:
-            pass
-
-    return "", ""
-
-
 def process_files(files, folder_name=None):
     """
     parses files and extracts as much information as possible
@@ -217,6 +241,9 @@ def process_files(files, folder_name=None):
 
                 files[item]["edition"], files[item]["edition_tag"] = parse_edition(item)
                 files[item]["dir_edition"], files[item]["dir_edition_tag"] = parse_edition(folder_name)
+
+                files[item]["codec"], files[item]["codec_tag"] = parse_codec(item)
+                files[item]["dir_codec"], files[item]["dir_codec_tag"] = parse_codec(folder_name)
 
                 if "sample" in item.lower():
                     files[item]["sample"] = True
@@ -268,6 +295,7 @@ def flatten_movie_results(files, movies=None, _first_layer=True, _path=""):
                             "sample": value["sample"],
                             "source": value["dir_source"] if dir_values else value["source"],
                             "edition": value["dir_edition"] if dir_values else value["edition"],
+                            "codec": value["dir_codec"] if dir_values else value["codec"],
                             "original_filename": item
                         },
                         "path": _path
