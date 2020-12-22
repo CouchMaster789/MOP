@@ -1,5 +1,6 @@
 import datetime
 import os
+import re
 import string
 from functools import reduce
 
@@ -138,7 +139,23 @@ def parse_name_pt2(name, year=None, resolution=None, source=None):
     elif source:
         name = name[:name.rfind(source)]
 
-    return name.strip(' ').lower().title()
+    name = string.capwords(name.strip(' ').lower())
+
+    name = parse_roman_numerals(name)
+
+    return name
+
+
+def parse_roman_numerals(name):
+    parsed_name = ""
+
+    words = name.split()
+    for index, word in enumerate(words):
+        if bool(re.search(r"^M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$", word.upper())):
+            word = word.upper()
+        parsed_name += word + " " if index < len(words) - 1 else word
+
+    return parsed_name
 
 
 def process_files(files, folder_name=None):
