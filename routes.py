@@ -20,11 +20,18 @@ def movies():
 
     sources = Source.query.all()
 
-    files = {source.address[:source.address.rfind("\\")]: get_directory_structure(source.address) for source in sources}
+    files = {}
+    for source in sources:
+        key = source.address[:source.address.rfind("\\")]
+        if key not in files:
+            files[key] = {}
+
+        files[source.address[:source.address.rfind("\\")]].update(get_directory_structure(source.address))
 
     process_files(files)
 
-    movie_list = sorted(flatten_movie_results(files), key=lambda key: key["marked"]["title"].lower())
+    movie_list = flatten_movie_results(files)
+    movie_list = sorted(movie_list, key=lambda key: key["marked"]["title"].lower())
 
     return jsonify({
         "movies": movie_list,
@@ -65,8 +72,15 @@ def update_sources():
 
 @bp.route('/local_movies')
 def local_movies():
-    files = {source.address[:source.address.rfind("\\")]: get_directory_structure(source.address)
-             for source in Source.query.all()}
+    sources = Source.query.all()
+
+    files = {}
+    for source in sources:
+        key = source.address[:source.address.rfind("\\")]
+        if key not in files:
+            files[key] = {}
+
+        files[source.address[:source.address.rfind("\\")]].update(get_directory_structure(source.address))
 
     process_files(files)
 
