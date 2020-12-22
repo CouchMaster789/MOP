@@ -21,8 +21,21 @@ sources = {"CAM": ["CAMRip", "CAM", "HDCAM"],
            "BluRay": ["Blu-Ray", "BluRay", "BDRip", "BD-Rip", "BRRip", "BR-Rip", "BDMV", "BDR", "BD25", "BD50",
                       "BD5", "BD9"],
            "HDRip": ["HDRip", "HD-Rip"]}
-sources = {tag: key for key, tags in sources.items() for tag in tags}
+sources = {tag: source for source, tags in sources.items() for tag in tags}  # reverses the above dictionary
+
+editions = {
+    "Limited": ["limited"],
+    "Unrated": ["unrated", "unrated edition"],
+    "Extended Cut": ["extended cut", " ec ", "extended cut edition", "extended"],
+    "Anniversary Edition": ["anniversary edition", "anniversary special edition"],
+    "Directors Cut": ["directors cut", "director's cut", "directors edition", "director's edition",
+                      "directors definitive edition", "director's definitive edition", "extended directors cut",
+                      "extended director's cut"],
+}
+editions = {tag: edition for edition, tags in editions.items() for tag in tags}  # reverses the above dictionary
+
 current_year = datetime.datetime.now().year
+letters = list(string.ascii_lowercase)
 
 
 def get_directory_structure(root_directory):
@@ -49,14 +62,14 @@ def parse_source(name):
     returns the source and the tag used
     """
 
-    letters = list(string.ascii_lowercase)
-
-    name = name.lower()
     for tag in sources:
-        tag_ = tag.lower()
-        if tag_ in name or tag_.replace("-", " ") in name:
-            if name[name.find(tag_) - 1] not in letters:
-                return sources[tag], tag
+        name_lower = name.lower()
+        try:
+            tag_index = name_lower.index(tag.lower())
+            if name_lower[tag_index - 1] not in letters:
+                return sources[tag], name[tag_index:tag_index + len(tag)]
+        except ValueError:
+            pass
 
     return "", ""
 
@@ -127,19 +140,18 @@ def parse_resolution(name):
     return ""
 
 
-def parse_name_pt2(name, year=None, resolution=None, source=None):
+def parse_name_pt2(name, year=None, resolution=None, source=None, edition=None):
     """reduces movie name up to year or resolution depending on which, if any, are present"""
 
-    if year:
-        name = name[:name.rfind(year)]
+    attributes = {}
+    for attribute in [year, resolution, source, edition]:
+        if attribute:
+            attributes[attribute] = name.find(attribute)
 
-    elif resolution:
-        name = name[:name.rfind(resolution)]
+    if attributes:
+        name = name[:name.rfind(min(attributes, key=attributes.get))]
 
-    elif source:
-        name = name[:name.rfind(source)]
-
-    name = string.capwords(name.strip(' ').lower())
+    name = string.capwords(name.strip(' ').lower())  # TODO: hyphened words should have capitals on second part as well
 
     name = parse_roman_numerals(name)
 
@@ -156,6 +168,23 @@ def parse_roman_numerals(name):
         parsed_name += word + " " if index < len(words) - 1 else word
 
     return parsed_name
+
+
+def parse_edition(name):
+    """
+    identifies edition used in name
+    returns the edition and the tag used
+    """
+
+    for edition_tag in editions:
+        try:
+            tag_index = name.lower().index(edition_tag)
+            if name[tag_index - 1] not in letters:
+                return editions[edition_tag], name[tag_index:tag_index + len(edition_tag)]
+        except ValueError:
+            pass
+
+    return "", ""
 
 
 def process_files(files, folder_name=None):
@@ -186,17 +215,22 @@ def process_files(files, folder_name=None):
                 files[item]["resolution"] = parse_resolution(name)
                 files[item]["dir_resolution"] = parse_resolution(folder_name)
 
+                files[item]["edition"], files[item]["edition_tag"] = parse_edition(item)
+                files[item]["dir_edition"], files[item]["dir_edition_tag"] = parse_edition(folder_name)
+
                 if "sample" in item.lower():
                     files[item]["sample"] = True
 
                 files[item]["name"] = parse_name_pt2(name,
                                                      year=files[item]["year"],
                                                      resolution=files[item]["resolution"],
-                                                     source=files[item]["source_tag"])
+                                                     source=files[item]["source_tag"],
+                                                     edition=files[item]["edition_tag"])
                 files[item]["dir_name"] = parse_name_pt2(folder_name,
                                                          year=files[item]["dir_year"],
                                                          resolution=files[item]["dir_resolution"],
-                                                         source=files[item]["dir_source_tag"])
+                                                         source=files[item]["dir_source_tag"],
+                                                         edition=files[item]["dir_edition_tag"])
 
     return files
 
@@ -233,6 +267,7 @@ def flatten_movie_results(files, movies=None, _first_layer=True, _path=""):
                             "resolution": value["dir_resolution"] if dir_values else value["resolution"],
                             "sample": value["sample"],
                             "source": value["dir_source"] if dir_values else value["source"],
+                            "edition": value["dir_edition"] if dir_values else value["edition"],
                             "original_filename": item
                         },
                         "path": _path
@@ -249,7 +284,7 @@ def take_from_dir(values):
 
     file_score, dir_score = 0, 0
 
-    attributes = ["year", "resolution", "source"]
+    attributes = ["year", "resolution", "source", "edition"]
 
     for attribute in attributes:
         if values[attribute]:
