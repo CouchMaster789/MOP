@@ -10,7 +10,7 @@ bp = Blueprint('movies', __name__, url_prefix="/")
 
 @bp.route("/")
 def index():
-    return redirect(url_for("movies"))
+    return redirect(url_for("movies.movies"))
 
 
 @bp.route("/movies", methods=["GET", "POST"])
