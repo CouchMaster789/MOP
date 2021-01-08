@@ -19,7 +19,7 @@ def movies():
         return render_template("movies.html")
 
     sources = Source.query.all()
-    movie_list = get_flat_movies(sources)
+    movie_list = get_flat_movies(*sources)
 
     return jsonify({
         "movies": movie_list,

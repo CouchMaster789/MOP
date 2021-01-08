@@ -325,7 +325,7 @@ def take_from_dir(values):
     return dir_score > file_score
 
 
-def get_flat_movies(sources):
+def get_flat_movies(*sources):
     """retrieves list of all movies in selected sources in a flat format"""
 
     files = {}
