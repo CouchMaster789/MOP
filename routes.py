@@ -3,7 +3,7 @@ from flask import jsonify, render_template, redirect, url_for, request, Blueprin
 from app import db
 from models import Source
 from tmdb import get_movie_data
-from utils import get_directory_structure, process_files, flatten_movie_results
+from utils import get_directory_structure, process_files, flatten_movie_results, get_flat_movies
 
 bp = Blueprint('movies', __name__, url_prefix="/")
 
@@ -19,22 +19,7 @@ def movies():
         return render_template("movies.html")
 
     sources = Source.query.all()
-
-    files = {}
-    for source in sources:
-        key = source.address[:source.address.rfind("\\")]
-        if key not in files:
-            files[key] = {}
-
-        files[source.address[:source.address.rfind("\\")]].update(get_directory_structure(source.address))
-
-    process_files(files)
-
-    movie_list = flatten_movie_results(files)
-    if movie_list:
-        movie_list = sorted(movie_list, key=lambda key: key["marked"]["year"].lower())
-    else:
-        movie_list = []
+    movie_list = get_flat_movies(sources)
 
     return jsonify({
         "movies": movie_list,

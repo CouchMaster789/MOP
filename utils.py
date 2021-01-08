@@ -323,3 +323,20 @@ def take_from_dir(values):
             dir_score += 1
 
     return dir_score > file_score
+
+
+def get_flat_movies(sources):
+    """retrieves list of all movies in selected sources in a flat format"""
+
+    files = {}
+    for source in sources:
+        key = source.address[:source.address.rfind("\\")]
+        if key not in files:
+            files[key] = {}
+
+        files[source.address[:source.address.rfind("\\")]].update(get_directory_structure(source.address))
+
+    process_files(files)
+
+    movie_list = flatten_movie_results(files)
+    return sorted(movie_list, key=lambda key: key["marked"]["year"].lower()) if movie_list else []
