@@ -1,25 +1,28 @@
 {% extends "base.html" %}
 
 {% block main_content %}
-    <div class="float-end">
-        <div class="card bg-info text-center mb-1 p-1 d-inline-block" style="width: 7em;">
-            <b id="sources_count">Loading Source Count</b>
+    <h1 class="text-center">MOP Movies</h1>
+
+    <div class="row justify-content-around">
+        <div class="col">
+            <div class="card bg-info text-dark text-center mb-1 p-1 d-inline-block" style="width: 7em;">
+                <b id="sources_count">Loading Source Count</b>
+            </div>
+
+            <div class="card bg-warning text-dark text-center d-inline-block mb-1 p-1" style="width: 7em;">
+                <b id="movie_count">Loading Movie Count</b>
+            </div>
         </div>
 
-        <div class="card bg-warning text-center d-inline-block mb-1 p-1" style="width: 7em;">
-            <b id="movie_count">Loading Movie Count</b>
+        <div class="col-auto text-end">
+            <form class="d-flex pt-1" style="max-width: 20em;">
+                <input class="form-control form-control-sm me-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-sm btn-outline-success" type="submit">Search</button>
+            </form>
         </div>
     </div>
 
-    <table class="table table-sm table-bordered border-primary" id="movie_list">
-        <thead>
-        <tr>
-            <th>Name</th>
-            <th>Year</th>
-            <th>Source</th>
-            <th>Vote</th>
-        </tr>
-        </thead>
+    <table class="table text-white mt-2" id="movie_list">
         <tbody id="body"></tbody>
     </table>
 {% endblock main_content %}
@@ -46,13 +49,17 @@
                         table.querySelector("#body").insertAdjacentHTML("beforeend", `
                         <tr>
                             <td>
-                                ${movie["tmdb"]["title"]}
-                                <small class="text-muted">${movie["marked"]["title"]}</small>
+                                <img src="{{ url_for("static", filename="test.jpg") }}" alt="Movie image goes here!" class="img">
                             </td>
-                            <td>${movie["marked"]["year"]}</td>
-                            <td>${movie["marked"]["source"]}</td>
                             <td>
-                                ${movie["tmdb"]["vote_average"]}
+                                <b>${movie["tmdb"]["title"]}</b>
+                                {#<small class="text-muted">${movie["marked"]["title"]}</small>#}
+                                <br>
+                                <small style="text-align: justify;">${movie["tmdb"]["overview"]}</small>
+                            </td>
+                            <td><b>${movie["marked"]["year"]}</b></td>
+                            <td>
+                                <b>${movie["tmdb"]["vote_average"]}</b>
                                 <small class="text-muted">${movie["tmdb"]["vote_count"]}</small>
                             </td>
                         </tr>

@@ -9,12 +9,14 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
 
+    <link href="{{ url_for("static", filename="style.css") }}" rel="stylesheet">
+
     <title>MOP Movies</title>
 </head>
 
-<body class="bg-dark">
+<body class="bg-dark2">
 
-<div class="container bg-light min-vh-100 px-0">
+<div class="container bg-dark text-white min-vh-100 px-0">
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark border-start border-end border-4 border-primary mb-1">
         <div class="container-fluid">
@@ -26,10 +28,12 @@
             <div class="collapse navbar-collapse" id="navbarText">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link {% if request.endpoint == "movies.movies" %}active{% endif %}" href="{{ url_for("movies.movies") }}">Movies</a>
+                        <a class="nav-link {% if request.endpoint == "movies.movies" %}active{% endif %}"
+                           href="{{ url_for("movies.movies") }}">Movies</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {% if request.endpoint == "movies.sources_page" %}active{% endif %}" href="{{ url_for("movies.sources_page") }}">Sources</a>
+                        <a class="nav-link {% if request.endpoint == "movies.sources_page" %}active{% endif %}"
+                           href="{{ url_for("movies.sources_page") }}">Sources</a>
                     </li>
                 </ul>
                 <span class="navbar-text">
@@ -51,8 +55,6 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW"
         crossorigin="anonymous"></script>
-
-<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.js"></script>
 
 {% block extra_js %}{% endblock extra_js %}
 
