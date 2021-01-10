@@ -89,16 +89,3 @@ def local_movies():
     movie_list = sorted(flatten_movie_results(files), key=lambda key: key["marked"]["title"])
 
     return jsonify({"movies": movie_list, "raw_data": files}), 200
-
-
-@bp.route('/remote_data')
-def remote_data():
-    files = get_directory_structure(current_app.config["MOVIE_DIR"])
-    process_files(files)
-
-    movies = []
-
-    for movie in sorted(flatten_movie_results(files), key=lambda key: key["marked"]["title"]):
-        movies.append(get_movie_data(movie))
-
-    return jsonify({"movies": movies}), 200

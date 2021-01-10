@@ -60,6 +60,23 @@ class Movie(db.Model):
 
     obj_hash = db.Column(db.Integer)
 
+    # tmdb data
+    tmdb_id = db.Column(db.Integer)
+    tmdb_last_checked = db.Column(db.DateTime)
+    imdb_id = db.Column(db.String(10))
+    title = db.Column(db.String(128))
+    original_title = db.Column(db.String(128))
+    overview = db.Column(db.String(1024))
+    adult = db.Column(db.Boolean)
+    popularity = db.Column(db.Float)
+    release_date = db.Column(db.DateTime)
+    revenue = db.Column(db.Integer)
+    runtime = db.Column(db.Integer)
+    status = db.Column(db.String(16))
+    tagline = db.Column(db.String(512))
+    vote_average = db.Column(db.Integer)
+    vote_count = db.Column(db.Integer)
+
     def __init__(self, path, filename, marked_codec=None, marked_edition=None, marked_resolution=None,
                  marked_sample=None, marked_source=None, marked_title=None, marked_year=None):
         self.created_at = datetime.datetime.utcnow()
@@ -89,6 +106,23 @@ class Movie(db.Model):
             self.path, self.filename, self.marked_codec, self.marked_edition, self.marked_resolution,
             self.marked_sample, self.marked_source, self.marked_title, self.marked_year
         )
+
+    def update_tmdb_general(self, response):
+        self.tmdb_last_checked = datetime.datetime.now()
+        self.tmdb_id = response["id"]
+        self.imdb_id = response["imdb_id"]
+        self.title = response["title"]
+        self.original_title = response["original_title"]
+        self.overview = response["overview"]
+        self.adult = True if response["adult"] == "True" else False
+        self.popularity = response["popularity"]
+        self.release_date = datetime.datetime.strptime(response["release_date"], "%Y-%m-%d")
+        self.revenue = response["revenue"]
+        self.runtime = response["runtime"]
+        self.status = response["status"]
+        self.tagline = response["tagline"]
+        self.vote_average = response["vote_average"]
+        self.vote_count = response["vote_count"]
 
 
 def compute_hash(*args):
