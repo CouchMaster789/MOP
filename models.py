@@ -124,6 +124,14 @@ class Movie(db.Model):
         self.vote_average = response["vote_average"]
         self.vote_count = response["vote_count"]
 
+    @hybrid_property
+    def tmdb_matched(self):
+        return True if self.tmdb_id is not None else False
+
+    @tmdb_matched.expression
+    def tmdb_matched(cls):
+        return cls.tmdb_id != None
+
 
 def compute_hash(*args):
     string = ""
