@@ -1,9 +1,9 @@
 from flask import jsonify, render_template, redirect, url_for, request, Blueprint, current_app
 
 from app import db
-from models import Source
+from models import Source, Movie
 from tmdb import get_movie_data
-from utils import get_directory_structure, process_files, flatten_movie_results, get_flat_movies
+from utils import get_directory_structure, process_files, flatten_movie_results
 
 bp = Blueprint('movies', __name__, url_prefix="/")
 
@@ -18,13 +18,27 @@ def movies():
     if request.method == "GET":
         return render_template("movies.html")
 
-    sources = Source.query.all()
-    movie_list = get_flat_movies(*sources)
+    num_sources = Source.query.count()
+    movies_dict = [
+        {
+            "filename": movie.filename,
+            "path": movie.path,
+            "marked": {
+                "title": movie.marked_title,
+                "year": movie.marked_year,
+                "source": movie.marked_source,
+                "resolution": movie.marked_resolution,
+                "edition": movie.marked_edition,
+                "codec": movie.marked_codec,
+            }
+        }
+        for movie in Movie.query.order_by(Movie.marked_title).all()
+    ]
 
     return jsonify({
-        "movies": movie_list,
-        "movie_count": len(movie_list),
-        "source_count": len(sources),
+        "movies": movies_dict,
+        "movie_count": len(movies_dict),
+        "source_count": num_sources,
     }), 200
 
 
