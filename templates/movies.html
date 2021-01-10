@@ -17,9 +17,7 @@
             <th>Name</th>
             <th>Year</th>
             <th>Source</th>
-            <th>Resolution</th>
-            <th>Edition</th>
-            <th>Codec</th>
+            <th>Vote</th>
         </tr>
         </thead>
         <tbody id="body"></tbody>
@@ -48,16 +46,15 @@
                         table.querySelector("#body").insertAdjacentHTML("beforeend", `
                         <tr>
                             <td>
-                                ${movie["marked"]["title"]}
-                                <small class="text-muted">${movie["filename"]}</small>
-                                <br>
-                                <small class="text-muted">${movie["path"]}</small>
+                                ${movie["tmdb"]["title"]}
+                                <small class="text-muted">${movie["marked"]["title"]}</small>
                             </td>
                             <td>${movie["marked"]["year"]}</td>
                             <td>${movie["marked"]["source"]}</td>
-                            <td>${movie["marked"]["resolution"]}</td>
-                            <td>${movie["marked"]["edition"]}</td>
-                            <td>${movie["marked"]["codec"]}</td>
+                            <td>
+                                ${movie["tmdb"]["vote_average"]}
+                                <small class="text-muted">${movie["tmdb"]["vote_count"]}</small>
+                            </td>
                         </tr>
                         `)
                     })

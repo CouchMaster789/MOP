@@ -2,7 +2,6 @@ from flask import jsonify, render_template, redirect, url_for, request, Blueprin
 
 from app import db
 from models import Source, Movie
-from tmdb import get_movie_data
 from utils import get_directory_structure, process_files, flatten_movie_results
 
 bp = Blueprint('movies', __name__, url_prefix="/")
@@ -30,9 +29,26 @@ def movies():
                 "resolution": movie.marked_resolution,
                 "edition": movie.marked_edition,
                 "codec": movie.marked_codec,
+            },
+            "tmdb": {
+                "tmdb_last_checked": movie.tmdb_last_checked,
+                "tmdb_id": movie.tmdb_id,
+                "imdb_id": movie.imdb_id,
+                "title": movie.title,
+                "original_title": movie.original_title,
+                "overview": movie.overview,
+                "adult": movie.adult,
+                "popularity": movie.popularity,
+                "release_date": movie.release_date,
+                "revenue": movie.revenue,
+                "runtime": movie.runtime,
+                "status": movie.status,
+                "tagline": movie.tagline,
+                "vote_average": movie.vote_average,
+                "vote_count": movie.vote_count,
             }
         }
-        for movie in Movie.query.order_by(Movie.marked_title).all()
+        for movie in Movie.query.order_by(Movie.vote_average.desc()).all()
     ]
 
     return jsonify({
