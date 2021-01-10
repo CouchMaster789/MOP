@@ -20,9 +20,9 @@ def create_app(config_class=Config):
 
     @app.shell_context_processor
     def make_shell_context():
-        from models import Source
+        from models import Source, Movie
 
-        return dict(app=app, db=db, Source=Source)
+        return dict(app=app, db=db, Source=Source, Movie=Movie)
 
     return app
 
