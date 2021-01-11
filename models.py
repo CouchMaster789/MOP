@@ -1,5 +1,6 @@
 import datetime
 import hashlib
+import os
 
 from sqlalchemy.ext.hybrid import hybrid_property
 
@@ -77,6 +78,8 @@ class Movie(db.Model):
     vote_average = db.Column(db.Integer)
     vote_count = db.Column(db.Integer)
 
+    files = db.relationship("File", secondary="movie_files")
+
     def __init__(self, path, filename, marked_codec=None, marked_edition=None, marked_resolution=None,
                  marked_sample=None, marked_source=None, marked_title=None, marked_year=None):
         self.created_at = datetime.datetime.utcnow()
@@ -132,6 +135,39 @@ class Movie(db.Model):
     def tmdb_matched(cls):
         return cls.tmdb_id != None
 
+    @property
+    def parent_dir(self):
+        """
+        movies directories are split up based on a hash of the tmdb id (this is to ease the reaction of filesystems for
+         large number of files)
+        """
+        return os.path.join("static", "media", "movies",
+                            hashlib.md5(str(self.tmdb_id).encode('utf-8')).hexdigest().lower()[0])
+
+    @property
+    def dir(self):
+        """movies are stored in directories based on tmdb id"""
+        return os.path.join(self.parent_dir, str(self.tmdb_id))
+
+    @property
+    def web_parent_path(self):
+        """
+        movies directories are split up based on a hash of the tmdb id (this is to ease the reaction of filesystems for
+         large number of files)
+        """
+        return os.path.join("media", "movies", hashlib.md5(str(self.tmdb_id).encode('utf-8')).hexdigest().lower()[0])
+
+    @property
+    def web_path(self):
+        """movies are stored in directories based on tmdb id"""
+        return os.path.join(self.web_parent_path, str(self.tmdb_id))
+
+    def build_dir(self):
+        if not os.path.isdir(self.parent_dir):
+            os.mkdir(self.parent_dir)
+        if not os.path.isdir(self.dir):
+            os.mkdir(self.dir)
+
 
 def compute_hash(*args):
     string = ""
@@ -140,3 +176,28 @@ def compute_hash(*args):
         string += str(arg) if arg else "None"
 
     return hashlib.md5(string.encode('utf-8')).hexdigest()
+
+
+class File(db.Model):
+    __tablename__ = "files"
+
+    id = db.Column(db.Integer, primary_key=True)
+    created_at = db.Column(db.DateTime)
+
+    name = db.Column(db.String(64))
+    type = db.Column(db.String(8))
+
+    def __init__(self, name, type_="image"):
+        self.name = name
+        self.created_at = datetime.datetime.utcnow()
+        self.type = type_
+
+    def __repr__(self):
+        return f"<File {self.name}>"
+
+
+class MovieFile(db.Model):
+    __tablename__ = "movie_files"
+
+    movie_id = db.Column(db.Integer, db.ForeignKey("movies.id"), primary_key=True)
+    file_id = db.Column(db.Integer, db.ForeignKey("files.id"), primary_key=True)

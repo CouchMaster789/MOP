@@ -1,4 +1,6 @@
-from flask import jsonify, render_template, redirect, url_for, request, Blueprint, current_app
+import os
+
+from flask import jsonify, render_template, redirect, url_for, request, Blueprint
 
 from app import db
 from models import Source, Movie
@@ -22,6 +24,7 @@ def movies():
         {
             "filename": movie.filename,
             "path": movie.path,
+            "img_path": os.path.join(movie.web_path, movie.files[0].name) if movie.files else "#",
             "marked": {
                 "title": movie.marked_title,
                 "year": movie.marked_year,
