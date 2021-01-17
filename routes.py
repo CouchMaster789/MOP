@@ -22,34 +22,14 @@ def movies():
     num_sources = Source.query.count()
     movies_dict = [
         {
-            "filename": movie.filename,
-            "path": movie.path,
+            "id": movie.id,
             "img_path": os.path.join(movie.web_path, movie.files[0].name) if movie.files else "#",
-            "marked": {
-                "title": movie.marked_title,
-                "year": movie.marked_year,
-                "source": movie.marked_source,
-                "resolution": movie.marked_resolution,
-                "edition": movie.marked_edition,
-                "codec": movie.marked_codec,
-            },
-            "tmdb": {
-                "tmdb_last_checked": movie.tmdb_last_checked,
-                "tmdb_id": movie.tmdb_id,
-                "imdb_id": movie.imdb_id,
-                "title": movie.title,
-                "original_title": movie.original_title,
-                "overview": movie.overview,
-                "adult": movie.adult,
-                "popularity": movie.popularity,
-                "release_date": movie.release_date,
-                "revenue": movie.revenue,
-                "runtime": movie.runtime,
-                "status": movie.status,
-                "tagline": movie.tagline,
-                "vote_average": movie.vote_average,
-                "vote_count": movie.vote_count,
-            }
+            "title": movie.title,
+            "overview": movie.overview,
+            "year": movie.release_year,
+            "runtime": movie.runtime,
+            "vote_average": movie.vote_average,
+            "vote_count": movie.vote_count,
         }
         for movie in Movie.query.order_by(Movie.vote_average.desc()).all()
     ]
@@ -58,6 +38,43 @@ def movies():
         "movies": movies_dict,
         "movie_count": len(movies_dict),
         "source_count": num_sources,
+    }), 200
+
+
+@bp.route("/movie/<movie_id>", methods=["POST"])
+def movie(movie_id):
+    movie = Movie.query.filter_by(id=movie_id).first_or_404()
+
+    return jsonify({
+        "id": movie.id,
+        "filename": movie.filename,
+        "path": movie.path,
+        "img_path": os.path.join(movie.web_path, movie.files[0].name) if movie.files else "#",
+        "marked": {
+            "title": movie.marked_title,
+            "year": movie.marked_year,
+            "source": movie.marked_source,
+            "resolution": movie.marked_resolution,
+            "edition": movie.marked_edition,
+            "codec": movie.marked_codec,
+        },
+        "tmdb": {
+            "tmdb_last_checked": movie.tmdb_last_checked,
+            "tmdb_id": movie.tmdb_id,
+            "imdb_id": movie.imdb_id,
+            "title": movie.title,
+            "original_title": movie.original_title,
+            "overview": movie.overview,
+            "adult": movie.adult,
+            "popularity": movie.popularity,
+            "release_date": movie.release_date,
+            "release_year": movie.release_year,
+            "revenue": movie.revenue,
+            "runtime": movie.runtime,
+            "status": movie.status,
+            "tagline": movie.tagline,
+            "vote_average": movie.vote_average,
+            "vote_count": movie.vote_count}
     }), 200
 
 

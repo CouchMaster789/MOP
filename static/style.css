@@ -30,6 +30,19 @@ h1 {
     background: #0d41fd;
 }
 
+.data-label {
+    font-weight: bold;
+    width: 9em;
+}
+
+.bg-row-selected {
+    background: #ff5200;
+    color: black;
+}
+.bg-row-selected small {
+    color: black!important;
+}
+
 .navbar-dark {
     background: #111115 !important;
 }

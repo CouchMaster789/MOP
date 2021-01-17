@@ -45,7 +45,7 @@
 
             <hr class="mt-0 mb-1">
 
-            <div class="auto-scroll">
+            <div class="auto-scroll mb-2">
                 <table class="table text-white mt-2 h-100" id="movie_list">
                     <tbody id="body"></tbody>
                 </table>
@@ -53,18 +53,19 @@
         </div>
 
         <div class="col-7 auto-scroll">
-            <div class="card bg-darkest">
+            <div class="card bg-darkest d-none" id="movie-card">
                 <div class="card-header">
                     <div class="row">
                         <div class="col">
-                            <h3 class="float-start mb-0">The Shawshank Redemption</h3>
-                            <small class="text-white-50 fw-bold ms-3" style="line-height: 3em;">1994</small>
-                            <small class="text-white-50 fw-bold ms-2" style="line-height: 3em;">2 hours 20
-                                minutes</small>
+                            <h3 class="float-start mb-0" id="movie-title"></h3>
+                            <small class="text-white-50 fw-bold ms-3" style="line-height: 3em;"
+                                   id="movie-year"></small>
+                            <small class="text-white-50 fw-bold ms-2" style="line-height: 3em;" id="movie-runtime">2
+                            </small>
                         </div>
                         <div class="col text-end">
-                            <b style="line-height: 2.5em;">8.7</b>
-                            <small class="text-muted">17956</small>
+                            <b style="line-height: 2.5em;" id="movie-vote-average"></b>
+                            <small class="text-muted" id="movie-vote-count"></small>
                         </div>
                     </div>
                 </div>
@@ -72,17 +73,7 @@
                 <div class="card-body text-white-50">
                     <div class="row">
                         <div class="col">
-                            <div class="text-justify"> {# TMDB Data #}
-                                Framed in the 1940s for the double murder of his wife and her lover, upstanding
-                                banker
-                                Andy Dufresne begins a new life at the Shawshank prison, where he puts his
-                                accounting
-                                skills to work for an amoral warden. During his long stretch in prison, Dufresne
-                                comes
-                                to be admired by the other inmates -- including an older prisoner named Red -- for
-                                his
-                                integrity and unquenchable sense of hope.
-                            </div>
+                            <div class="text-justify" id="movie-overview"></div>
 
                             <hr>
 
@@ -91,40 +82,36 @@
                                     Marked Data
                                 </h5>
 
-                                <label class="fw-bold" style="width: 9em;">Filename</label>
-                                <span>The Shawshank Redemption 1994 1080p Bluray Remux DTS-HD MA 5.1 AVC-decatora27.mkv</span>
+                                <label class="data-label">Title</label>
+                                <span id="movie-marked-title"></span>
                                 <br>
 
-                                <label class="fw-bold" style="width: 9em;">Path</label>
-                                <span>M:\Movies\Movies</span>
+                                <label class="data-label">Path</label>
+                                <span id="movie-marked-path"></span>
                                 <br>
 
-                                <label class="fw-bold" style="width: 9em;">Codec</label>
-                                <span>H264</span>
+                                <label class="data-label">Filename</label>
+                                <span id="movie-marked-filename"></span>
                                 <br>
 
-                                <label class="fw-bold" style="width: 9em;">Edition</label>
-                                <span>Anniversary Edition</span>
+                                <label class="data-label">Year</label>
+                                <span id="movie-marked-year"></span>
                                 <br>
 
-                                <label class="fw-bold" style="width: 9em;">Resolution</label>
-                                <span>1080p</span>
+                                <label class="data-label">Codec</label>
+                                <span id="movie-marked-codec"></span>
                                 <br>
 
-                                <label class="fw-bold" style="width: 9em;">Sample</label>
-                                <span>False</span>
+                                <label class="data-label">Edition</label>
+                                <span id="movie-marked-edition"></span>
                                 <br>
 
-                                <label class="fw-bold" style="width: 9em;">Source</label>
-                                <span>BluRay</span>
+                                <label class="data-label">Resolution</label>
+                                <span id="movie-marked-resolution"></span>
                                 <br>
 
-                                <label class="fw-bold" style="width: 9em;">Title</label>
-                                <span>The Shawshank Redemption</span>
-                                <br>
-
-                                <label class="fw-bold" style="width: 9em;">Year</label>
-                                <span>1994</span>
+                                <label class="data-label">Source</label>
+                                <span id="movie-marked-source"></span>
                                 <br>
                             </div>
 
@@ -180,6 +167,19 @@
                           title="Object Hash">bu3ib98r37ubiub</span>
                 </div>
             </div>
+
+            <div class="h-100 pb-2" id="unselected-card">
+                <div class="card bg-darkest h-100">
+                    <div class="card-body d-flex justify-content-center align-items-center h-100">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" fill="currentColor"
+                             class="bi bi-camera-reels align-middle" viewBox="0 0 16 16">
+                            <path d="M6 3a3 3 0 1 1-6 0 3 3 0 0 1 6 0zM1 3a2 2 0 1 0 4 0 2 2 0 0 0-4 0z"></path>
+                            <path d="M9 6h.5a2 2 0 0 1 1.983 1.738l3.11-1.382A1 1 0 0 1 16 7.269v7.462a1 1 0 0 1-1.406.913l-3.111-1.382A2 2 0 0 1 9.5 16H2a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h7zm6 8.73V7.27l-3.5 1.555v4.35l3.5 1.556zM1 8v6a1 1 0 0 0 1 1h7.5a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1z"></path>
+                            <path d="M9 6a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM7 3a2 2 0 1 1 4 0 2 2 0 0 1-4 0z"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -187,14 +187,17 @@
 
 {% block extra_js %}
     <script>
+        let table = document.querySelector("#movie_list");
+        let movie_card = document.querySelector("#movie-card");
+        let unselected_card = document.querySelector("#unselected-card");
+        let clicked_row = null;
+
         document.addEventListener("DOMContentLoaded", function () {
 
             let tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
             let tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
                 return new bootstrap.Tooltip(tooltipTriggerEl)
             })
-
-            let table = document.querySelector("#movie_list");
 
             fetch("{{ url_for("movies.movies") }}", {
                 method: "POST"
@@ -211,24 +214,75 @@
 
                     data["movies"].forEach(function (movie) {
                         table.querySelector("#body").insertAdjacentHTML("beforeend", `
-                        <tr class="row-hover">
+                        <tr class="row-hover" onclick="show_movie('${movie["id"]}');toggle_rows(this);" style="user-select: none;">
                             <td>
                                 <img src="${'{{ url_for("static", filename="test.jpg") }}'.replace("test.jpg", movie["img_path"])}" alt="Poster" class="img">
                             </td>
                             <td class="text-justify">
-                                <b>${movie["tmdb"]["title"]}</b>
+                                <b>${movie["title"]}</b>
                                 <br>
-                                <small class="text-white-50">${movie["tmdb"]["overview"]}</small>
+                                <small class="text-white-50">${movie["overview"]}</small>
                             </td>
-                            <td><b>${movie["marked"]["year"]}</b></td>
+                            <td><b>${movie["year"]}</b></td>
                             <td>
-                                <b>${movie["tmdb"]["vote_average"]}</b>
-                                <small class="text-muted">${movie["tmdb"]["vote_count"]}</small>
+                                <b>${movie["vote_average"]}</b>
+                                <small class="text-muted">${movie["vote_count"]}</small>
                             </td>
                         </tr>
                         `)
                     })
                 });
         });
+
+        function show_movie(id) {
+            let card_id = movie_card.getAttribute("data-movie-id");
+
+            if (card_id === id) {
+                movie_card.classList.add("d-none");
+                unselected_card.classList.remove("d-none");
+                movie_card.removeAttribute("data-movie-id");
+                return;
+            }
+
+            fetch("{{ url_for("movies.movie", movie_id="replace") }}".replace("replace", id), {
+                method: "POST"
+            })
+                .then(response => response.json())
+                .then(function (data) {
+                    console.log(data);
+
+                    movie_card.querySelector("#movie-title").innerText = data["tmdb"]["title"];
+                    movie_card.querySelector("#movie-year").innerText = data["tmdb"]["release_year"];
+                    movie_card.querySelector("#movie-runtime").innerText = data["tmdb"]["runtime"] + " minutes";
+                    movie_card.querySelector("#movie-vote-average").innerText = data["tmdb"]["vote_average"];
+                    movie_card.querySelector("#movie-vote-count").innerText = data["tmdb"]["vote_count"];
+                    movie_card.querySelector("#movie-overview").innerText = data["tmdb"]["overview"];
+
+                    movie_card.querySelector("#movie-marked-filename").innerText = data["filename"];
+                    movie_card.querySelector("#movie-marked-path").innerText = data["path"];
+                    movie_card.querySelector("#movie-marked-codec").innerText = data["marked"]["codec"];
+                    movie_card.querySelector("#movie-marked-edition").innerText = data["marked"]["edition"];
+                    movie_card.querySelector("#movie-marked-resolution").innerText = data["marked"]["resolution"];
+                    movie_card.querySelector("#movie-marked-source").innerText = data["marked"]["source"];
+                    movie_card.querySelector("#movie-marked-title").innerText = data["marked"]["title"];
+                    movie_card.querySelector("#movie-marked-year").innerText = data["marked"]["year"];
+
+                    movie_card.setAttribute("data-movie-id", `${data["id"]}`);
+                });
+
+            unselected_card.classList.add("d-none");
+            movie_card.classList.remove("d-none");
+        }
+
+        function toggle_rows(row) {
+            if (clicked_row)
+                clicked_row.classList.remove("bg-row-selected");
+            if (clicked_row === row)
+                clicked_row = null;
+            else {
+                clicked_row = row;
+                clicked_row.classList.add("bg-row-selected");
+            }
+        }
     </script>
 {% endblock extra_js %}

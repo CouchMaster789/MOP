@@ -166,6 +166,10 @@ class Movie(db.Model):
     def movie_path(self):
         return os.path.join(self.path, self.filename)
 
+    @hybrid_property
+    def release_year(self):
+        return self.release_date.year if self.release_date else ""
+
     def build_dir(self):
         if not os.path.isdir(self.parent_dir):
             os.mkdir(self.parent_dir)
