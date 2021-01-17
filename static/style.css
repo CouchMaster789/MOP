@@ -1,3 +1,7 @@
+h1 {
+    font-size: xxx-large;
+}
+
 .bg-dark {
     background: #2e3237 !important;
 }
@@ -8,6 +12,22 @@
 
 .bg-dark2 {
     background: #444b4f;
+}
+
+.btn-orange {
+    background: #ff5200;
+}
+
+.btn-primary {
+    background: #0d41fd;
+}
+
+.btn-outline-primary {
+    border-color: #0d41fd;
+}
+
+.btn-outline-primary:hover {
+    background: #0d41fd;
 }
 
 .navbar-dark {
@@ -33,3 +53,30 @@ tr:hover {
     min-height: 0;
     overflow-y: auto;
 }
+
+/* START Scrollbar CSS */
+html {
+    --scrollbarBG: #CFD8DC;
+    --thumbBG: #414c50;
+}
+
+.auto-scroll::-webkit-scrollbar {
+    width: 11px;
+}
+
+.auto-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: var(--thumbBG) var(--scrollbarBG);
+}
+
+.auto-scroll::-webkit-scrollbar-track {
+    background: var(--scrollbarBG);
+}
+
+.auto-scroll::-webkit-scrollbar-thumb {
+    background-color: var(--thumbBG);
+    border-radius: 6px;
+    border: 3px solid var(--scrollbarBG);
+}
+
+/* END Scrollbar CSS */
