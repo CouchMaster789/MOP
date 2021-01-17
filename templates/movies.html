@@ -1,35 +1,179 @@
 {% extends "base.html" %}
 
 {% block main_content %}
-    <h1 class="text-center">MOP Movies</h1>
+    <h1 class="text-center my-4">MOP Movies</h1>
 
-    <div class="row justify-content-around">
-        <div class="col">
-            <div class="card bg-info text-dark text-center mb-1 p-1 d-inline-block" style="width: 7em;">
-                <b id="sources_count">Loading Source Count</b>
-            </div>
+    <div class="row d-flex flex-column auto-scroll h-100">
 
-            <div class="card bg-warning text-dark text-center d-inline-block mb-1 p-1" style="width: 7em;">
-                <b id="movie_count">Loading Movie Count</b>
+        <div class="col-5 d-flex flex-column auto-scroll">
+                <div class="row justify-content-around">
+                    <div class="col">
+                        <div class="card bg-info text-dark text-center mb-1 p-1 d-inline-block" style="width: 7em;">
+                            <b id="sources_count">Loading Source Count</b>
+                        </div>
+
+                        <div class="card bg-warning text-dark text-center d-inline-block mb-1 p-1"
+                             style="width: 7em;">
+                            <b id="movie_count">Loading Movie Count</b>
+                        </div>
+                    </div>
+
+                    <div class="col-auto text-end">
+                        <form class="d-flex pt-1" style="max-width: 20em;">
+                            <input class="form-control form-control-sm me-2" type="search" placeholder="Search"
+                                   aria-label="Search">
+                            <button class="btn btn-sm btn-outline-success" type="submit">Search</button>
+                        </form>
+                    </div>
+                </div>
+            <div class="auto-scroll">
+                <table class="table text-white mt-2" id="movie_list">
+                    <tbody id="body"></tbody>
+                </table>
             </div>
         </div>
 
-        <div class="col-auto text-end">
-            <form class="d-flex pt-1" style="max-width: 20em;">
-                <input class="form-control form-control-sm me-2" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-sm btn-outline-success" type="submit">Search</button>
-            </form>
+        <div class="col-7 auto-scroll">
+            <div class="card bg-darkest">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col">
+                            <h3 class="float-start mb-0">The Shawshank Redemption</h3>
+                            <small class="text-white-50 fw-bold ms-3" style="line-height: 3em;">1994</small>
+                            <small class="text-white-50 fw-bold ms-2" style="line-height: 3em;">2 hours 20
+                                minutes</small>
+                        </div>
+                        <div class="col text-end">
+                            <b style="line-height: 2.5em;">8.7</b>
+                            <small class="text-muted">17956</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-body text-white-50">
+                    <div class="row">
+                        <div class="col">
+                            <div class="text-justify"> TMDB Data
+                                Framed in the 1940s for the double murder of his wife and her lover, upstanding
+                                banker
+                                Andy Dufresne begins a new life at the Shawshank prison, where he puts his
+                                accounting
+                                skills to work for an amoral warden. During his long stretch in prison, Dufresne
+                                comes
+                                to be admired by the other inmates -- including an older prisoner named Red -- for
+                                his
+                                integrity and unquenchable sense of hope.
+                            </div>
+
+                            <hr>
+
+                            <div class="bg-dark p-2">
+                                <h5 class="text-white">
+                                    Marked Data
+                                </h5>
+
+                                <label class="fw-bold" style="width: 9em;">Filename</label>
+                                <span>The Shawshank Redemption 1994 1080p Bluray Remux DTS-HD MA 5.1 AVC-decatora27.mkv</span>
+                                <br>
+
+                                <label class="fw-bold" style="width: 9em;">Path</label>
+                                <span>M:\Movies\Movies</span>
+                                <br>
+
+                                <label class="fw-bold" style="width: 9em;">Codec</label>
+                                <span>H264</span>
+                                <br>
+
+                                <label class="fw-bold" style="width: 9em;">Edition</label>
+                                <span>Anniversary Edition</span>
+                                <br>
+
+                                <label class="fw-bold" style="width: 9em;">Resolution</label>
+                                <span>1080p</span>
+                                <br>
+
+                                <label class="fw-bold" style="width: 9em;">Sample</label>
+                                <span>False</span>
+                                <br>
+
+                                <label class="fw-bold" style="width: 9em;">Source</label>
+                                <span>BluRay</span>
+                                <br>
+
+                                <label class="fw-bold" style="width: 9em;">Title</label>
+                                <span>The Shawshank Redemption</span>
+                                <br>
+
+                                <label class="fw-bold" style="width: 9em;">Year</label>
+                                <span>1994</span>
+                                <br>
+                            </div>
+
+                            <hr>
+
+                            <div class="bg-dark p-2">
+                                <h5 class="text-white">
+                                    Scanned Data
+                                </h5>
+
+                                <label class="fw-bold" style="width: 9em;">Duration</label>
+                                <span>02:20:18</span>
+                                <br>
+
+                                <label class="fw-bold" style="width: 9em;">Size</label>
+                                <span>12.53 GB</span>
+                                <br>
+
+                                <label class="fw-bold" style="width: 9em;">Bitrate</label>
+                                <span>12055 kbps</span>
+                                <br>
+
+                                <label class="fw-bold" style="width: 9em;">Video Codec</label>
+                                <span>H264</span>
+                                <br>
+
+                                <label class="fw-bold" style="width: 9em;">Audio Codec</label>
+                                <span>DTS HD-MA</span>
+                                <br>
+                            </div>
+
+                            <hr>
+
+                            <div>
+                                <h5 class="text-white">Cast</h5>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <img alt="Backdrop" style="width: 30em;"
+                                 src="{{ url_for("static", filename="iNh3BivHyg5sQRPP1KOkzguEX0H.jpg") }}">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-footer">
+                    <button class="btn btn-warning fw-bold">Fix Match</button>
+                    <button class="btn btn-success text-dark fw-bold">Refresh Local Data</button>
+                    <button class="btn btn-success text-dark fw-bold">Refresh Remote Data</button>
+                    <button class="btn btn-danger text-dark fw-bold">Delete</button>
+
+                    <span class="float-end text-white-50 pt-2" data-bs-toggle="tooltip" data-bs-placement="left"
+                          title="Object Hash">bu3ib98r37ubiub</span>
+                </div>
+            </div>
         </div>
     </div>
 
-    <table class="table text-white mt-2" id="movie_list">
-        <tbody id="body"></tbody>
-    </table>
 {% endblock main_content %}
 
 {% block extra_js %}
     <script>
         document.addEventListener("DOMContentLoaded", function () {
+
+            let tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+            let tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl)
+            })
+
             let table = document.querySelector("#movie_list");
 
             fetch("{{ url_for("movies.movies") }}", {
@@ -47,15 +191,14 @@
 
                     data["movies"].forEach(function (movie) {
                         table.querySelector("#body").insertAdjacentHTML("beforeend", `
-                        <tr>
+                        <tr class="row-hover">
                             <td>
-                                <img src="${'{{ url_for("static", filename="test.jpg") }}'.replace("test.jpg", movie["img_path"])}" alt="Movie image goes here!" class="img">
+                                <img src="${'{{ url_for("static", filename="test.jpg") }}'.replace("test.jpg", movie["img_path"])}" alt="Poster" class="img">
                             </td>
-                            <td>
+                            <td class="text-justify">
                                 <b>${movie["tmdb"]["title"]}</b>
-                                {#<small class="text-muted">${movie["marked"]["title"]}</small>#}
                                 <br>
-                                <small style="text-align: justify;">${movie["tmdb"]["overview"]}</small>
+                                <small class="text-white-50">${movie["tmdb"]["overview"]}</small>
                             </td>
                             <td><b>${movie["marked"]["year"]}</b></td>
                             <td>

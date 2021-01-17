@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="h-100">
 <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -14,10 +14,8 @@
     <title>MOP Movies</title>
 </head>
 
-<body class="bg-dark2">
-
-<div class="container bg-dark text-white min-vh-100 px-0">
-
+<body class="bg-dark2 h-100">
+<div class="bg-dark text-white d-flex flex-column h-100 px-0">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark border-start border-end border-4 border-primary mb-1">
         <div class="container-fluid">
             <a class="navbar-brand fw-bold" href="{{ url_for("movies.movies") }}">MOP</a>
@@ -43,9 +41,13 @@
         </div>
     </nav>
 
-    <div class="container">
+    <div class="container-fluid d-flex flex-column auto-scroll h-100">
         {% block main_content %}{% endblock main_content %}
     </div>
+
+    <footer class="navbar-dark px-4 py-1 text-center">
+        Powered by <a href="#">ProjectDan</a>
+    </footer>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"

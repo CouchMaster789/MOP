@@ -162,6 +162,10 @@ class Movie(db.Model):
         """movies are stored in directories based on tmdb id"""
         return os.path.join(self.web_parent_path, str(self.tmdb_id))
 
+    @property
+    def movie_path(self):
+        return os.path.join(self.path, self.filename)
+
     def build_dir(self):
         if not os.path.isdir(self.parent_dir):
             os.mkdir(self.parent_dir)
